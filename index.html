@@ -4,76 +4,322 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>量子导航</title>
-<!-- 修改部分代码，省略未更改的部分 -->
+    <style>
+        :root {
+            --neon-blue: #0ff;
+            --neon-pink: #f0f;
+            --dark-bg: #0a0a1f;
+        }
 
-<style>
-/* 删除原来的 site-icon 相关样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.site-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px; /* 调整内边距 */
-    text-decoration: none;
-    color: #fff;
-    background: rgba(255,255,255,0.05);
-    border-radius: 6px;
-    transition: all 0.3s;
-    font-size: 15px; /* 调整字体大小 */
-}
+        body {
+            background: var(--dark-bg);
+            color: #fff;
+            font-family: 'Segoe UI', "微软雅黑", sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-.site-item:hover {
-    background: rgba(0,255,255,0.1);
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0,255,255,0.2);
-}
-</style>
+        /* 动态背景 */
+        .cyber-bg {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                linear-gradient(to right, transparent 95%, var(--neon-blue) 95%),
+                linear-gradient(to bottom, transparent 95%, var(--neon-blue) 95%);
+            background-size: 50px 50px;
+            opacity: 0.1;
+            z-index: -1;
+            animation: bgMove 20s linear infinite;
+        }
 
-<!-- 网站链接部分修改示例 -->
-<div class="category-card">
-    <h2 class="category-title">🌐 社交媒体</h2>
-    <div class="site-list">
-        <a href="https://www.twitter.com" class="site-item" target="_blank">
-            Twitter
-        </a>
-        <a href="https://www.instagram.com" class="site-item" target="_blank">
-            Instagram
-        </a>
-        <a href="https://www.bilibili.com" class="site-item" target="_blank">
-            哔哩哔哩
-        </a>
-    </div>
-</div>
+        @keyframes bgMove {
+            from { background-position: 0 0; }
+            to { background-position: 50px 50px; }
+        }
 
-<div class="category-card">
-    <h2 class="category-title">🤖 AI工具</h2>
-    <div class="site-list">
-        <a href="https://chat.openai.com" class="site-item" target="_blank">
-            ChatGPT
-        </a>
-        <a href="https://www.midjourney.com" class="site-item" target="_blank">
-            Midjourney
-        </a>
-        <a href="https://claude.ai" class="site-item" target="_blank">
-            Claude
-        </a>
-    </div>
-</div>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-<div class="category-card">
-    <h2 class="category-title">⚡ 开发工具</h2>
-    <div class="site-list">
-        <a href="https://github.com" class="site-item" target="_blank">
-            GitHub
-        </a>
-        <a href="https://stackoverflow.com" class="site-item" target="_blank">
-            Stack Overflow
-        </a>
-        <a href="https://code.visualstudio.com" class="site-item" target="_blank">
-            VS Code
-        </a>
-    </div>
-</div>
+        /* 头部搜索区域 */
+        .header {
+            text-align: center;
+            margin: 40px 0;
+            position: relative;
+        }
 
+        .logo {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            transform-style: preserve-3d;
+            transition: transform 0.3s;
+        }
+
+        .search-box:hover {
+            transform: translateZ(20px);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid var(--neon-blue);
+            border-radius: 8px;
+            background: rgba(0,255,255,0.05);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        }
+
+        .search-btn {
+            padding: 0 30px;
+            border: none;
+            border-radius: 8px;
+            background: var(--neon-blue);
+            color: var(--dark-bg);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background: var(--neon-pink);
+            transform: translateZ(30px);
+        }
+
+        /* 网站分类区 */
+        .sites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 20px 0;
+        }
+
+        .category-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0,255,255,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(0,255,255,0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .category-card:hover::before {
+            left: 100%;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 5px 20px rgba(0,255,255,0.2);
+        }
+
+        .category-title {
+            font-size: 1.2em;
+            color: var(--neon-blue);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--neon-pink);
+        }
+
+        .site-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .site-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-size: 15px;
+            position: relative;
+        }
+
+        .site-item:hover {
+            background: rgba(0,255,255,0.1);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0,255,255,0.2);
+            color: var(--neon-blue);
+        }
+
+        .site-item::after {
+            content: '→';
+            position: absolute;
+            right: 15px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .site-item:hover::after {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                padding: 15px;
+            }
+            
+            .site-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-bg"></div>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">QUANTUM NAV</h1>
+            <form action="https://www.google.com/search" method="get" target="_blank" class="search-container">
+                <div class="search-box">
+                    <input type="text" name="q" class="search-input" placeholder="探索无限可能...">
+                    <button type="submit" class="search-btn">SEARCH</button>
+                </div>
+            </form>
+        </header>
+
+        <main class="sites-grid">
+            <!-- 社交媒体 -->
+            <div class="category-card">
+                <h2 class="category-title">🌐 社交媒体</h2>
+                <div class="site-list">
+                    <a href="https://www.twitter.com" class="site-item" target="_blank">
+                        Twitter
+                    </a>
+                    <a href="https://www.instagram.com" class="site-item" target="_blank">
+                        Instagram
+                    </a>
+                    <a href="https://www.bilibili.com" class="site-item" target="_blank">
+                        哔哩哔哩
+                    </a>
+                    <a href="https://www.youtube.com" class="site-item" target="_blank">
+                        YouTube
+                    </a>
+                </div>
+            </div>
+
+            <!-- AI工具 -->
+            <div class="category-card">
+                <h2 class="category-title">🤖 AI工具</h2>
+                <div class="site-list">
+                    <a href="https://chat.openai.com" class="site-item" target="_blank">
+                        ChatGPT
+                    </a>
+                    <a href="https://www.midjourney.com" class="site-item" target="_blank">
+                        Midjourney
+                    </a>
+                    <a href="https://claude.ai" class="site-item" target="_blank">
+                        Claude
+                    </a>
+                    <a href="https://bard.google.com" class="site-item" target="_blank">
+                        Bard
+                    </a>
+                </div>
+            </div>
+
+            <!-- 开发工具 -->
+            <div class="category-card">
+                <h2 class="category-title">⚡ 开发工具</h2>
+                <div class="site-list">
+                    <a href="https://github.com" class="site-item" target="_blank">
+                        GitHub
+                    </a>
+                    <a href="https://stackoverflow.com" class="site-item" target="_blank">
+                        Stack Overflow
+                    </a>
+                    <a href="https://code.visualstudio.com" class="site-item" target="_blank">
+                        VS Code
+                    </a>
+                    <a href="https://codepen.io" class="site-item" target="_blank">
+                        CodePen
+                    </a>
+                </div>
+            </div>
+
+            <!-- 学习资源 -->
+            <div class="category-card">
+                <h2 class="category-title">📚 学习资源</h2>
+                <div class="site-list">
+                    <a href="https://www.coursera.org" class="site-item" target="_blank">
+                        Coursera
+                    </a>
+                    <a href="https://www.udemy.com" class="site-item" target="_blank">
+                        Udemy
+                    </a>
+                    <a href="https://www.freecodecamp.org" class="site-item" target="_blank">
+                        freeCodeCamp
+                    </a>
+                    <a href="https://developer.mozilla.org" class="site-item" target="_blank">
+                        MDN
+                    </a>
+                </div>
+            </div>
         </main>
     </div>
 </body>
