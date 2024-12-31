@@ -2,8 +2,15 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>赛博朋克导航站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未来科技导航站</title>
     <style>
+        :root {
+            --primary: #00fff2;
+            --secondary: #ff2975;
+            --bg: #0f1729;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -11,21 +18,25 @@
         }
 
         body {
-            background: #000;
+            background: var(--bg);
             color: #fff;
-            font-family: 'Orbitron', "微软雅黑", sans-serif;
+            font-family: "微软雅黑", sans-serif;
             min-height: 100vh;
-            background: linear-gradient(45deg, #000, #1a0f3c);
+            position: relative;
         }
 
-        /* 故障效果 */
-        @keyframes glitch {
-            0% { transform: translate(0) }
-            20% { transform: translate(-2px, 2px) }
-            40% { transform: translate(-2px, -2px) }
-            60% { transform: translate(2px, 2px) }
-            80% { transform: translate(2px, -2px) }
-            100% { transform: translate(0) }
+        /* 动态背景 */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(15, 23, 41, 0.9) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 41, 0.9) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
         }
 
         .container {
@@ -34,219 +45,207 @@
             padding: 20px;
         }
 
-        /* 标题样式 */
-        .header {
-            text-align: center;
-            margin: 40px 0;
-            font-size: 3em;
-            color: #ff00ff;
-            text-shadow: 2px 2px #00ffff;
-            animation: glitch 1s infinite;
+        /* 搜索区域 */
+        .search-area {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* 搜索框 */
-        .search-box {
+        .search-title {
             text-align: center;
-            margin: 40px 0;
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .search-input {
-            width: 60%;
-            padding: 15px 25px;
-            background: rgba(0,0,0,0.7);
-            border: 2px solid #ff00ff;
-            border-radius: 5px;
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
             color: #fff;
-            font-size: 18px;
-            box-shadow: 0 0 20px #ff00ff;
+            font-size: 16px;
+            transition: all 0.3s;
         }
 
         .search-input:focus {
             outline: none;
-            box-shadow: 0 0 30px #ff00ff;
+            box-shadow: 0 0 15px rgba(0,255,242,0.3);
         }
 
-        /* 网站卡片容器 */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-
-        /* 网站卡片 */
-        .site-card {
-            background: rgba(0,0,0,0.8);
-            border: 1px solid #ff00ff;
-            padding: 20px;
+        .search-btn {
+            padding: 0 30px;
+            border: none;
             border-radius: 10px;
+            background: var(--primary);
+            color: var(--bg);
+            cursor: pointer;
+            font-weight: bold;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
         }
 
-        .site-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(255,0,255,0.5);
+        .search-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
         }
 
-        .site-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent,
-                rgba(255,0,255,0.1),
-                transparent
-            );
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) rotate(45deg); }
-        }
-
-        .site-title {
-            color: #00ffff;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #ff00ff;
-            padding-bottom: 5px;
-        }
-
-        .site-list {
+        /* 网站分类区 */
+        .sites-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .site-category {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s;
+        }
+
+        .site-category:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-title {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .site-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 10px;
         }
 
         .site-item {
             display: flex;
             align-items: center;
+            padding: 10px;
             text-decoration: none;
             color: #fff;
-            padding: 8px;
-            border-radius: 5px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
             transition: all 0.3s;
-            background: rgba(255,0,255,0.1);
         }
 
         .site-item:hover {
-            background: rgba(255,0,255,0.2);
+            background: rgba(255,255,255,0.1);
             transform: scale(1.05);
         }
 
         .site-icon {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             margin-right: 8px;
-            border-radius: 4px;
         }
 
-        /* 响应式设计 */
+        /* 响应式调整 */
         @media (max-width: 768px) {
-            .search-input {
-                width: 90%;
+            .container {
+                padding: 10px;
             }
-            .grid-container {
-                grid-template-columns: 1fr;
+            
+            .search-box {
+                flex-direction: column;
             }
-            .site-list {
+            
+            .search-btn {
+                padding: 15px;
+            }
+            
+            .sites-container {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <div class="bg-grid"></div>
     <div class="container">
-        <h1 class="header">CYBER NAV</h1>
-        
-        <div class="search-box">
-            <input type="text" class="search-input" placeholder="输入关键词搜索...">
+        <div class="search-area">
+            <h1 class="search-title">未来科技导航</h1>
+            <form action="https://www.google.com/search" method="get" target="_blank" class="search-box">
+                <input type="text" name="q" class="search-input" placeholder="输入关键词搜索...">
+                <button type="submit" class="search-btn">Google 搜索</button>
+            </form>
         </div>
 
-        <div class="grid-container">
-            <!-- 社交媒体 -->
-            <div class="site-card">
-                <h2 class="site-title">社交媒体</h2>
-                <div class="site-list">
-                    <a href="https://www.bilibili.com" class="site-item">
-                        <img src="https://www.bilibili.com/favicon.ico" class="site-icon">
-                        <span>哔哩哔哩</span>
-                    </a>
-                    <a href="https://www.weibo.com" class="site-item">
-                        <img src="https://weibo.com/favicon.ico" class="site-icon">
-                        <span>微博</span>
-                    </a>
-                    <a href="https://www.zhihu.com" class="site-item">
-                        <img src="https://www.zhihu.com/favicon.ico" class="site-icon">
-                        <span>知乎</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- 技术社区 -->
-            <div class="site-card">
-                <h2 class="site-title">技术社区</h2>
-                <div class="site-list">
+        <div class="sites-container">
+            <!-- 常用工具 -->
+            <div class="site-category">
+                <h2 class="category-title">🛠️ 常用工具</h2>
+                <div class="site-grid">
                     <a href="https://github.com" class="site-item">
                         <img src="https://github.com/favicon.ico" class="site-icon">
                         <span>GitHub</span>
                     </a>
-                    <a href="https://juejin.cn" class="site-item">
-                        <img src="https://juejin.cn/favicon.ico" class="site-icon">
-                        <span>掘金</span>
+                    <a href="https://chat.openai.com" class="site-item">
+                        <img src="https://chat.openai.com/favicon.ico" class="site-icon">
+                        <span>ChatGPT</span>
                     </a>
-                    <a href="https://www.v2ex.com" class="site-item">
-                        <img src="https://www.v2ex.com/favicon.ico" class="site-icon">
-                        <span>V2EX</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- 工具箱 -->
-            <div class="site-card">
-                <h2 class="site-title">实用工具</h2>
-                <div class="site-list">
                     <a href="https://www.notion.so" class="site-item">
                         <img src="https://www.notion.so/favicon.ico" class="site-icon">
                         <span>Notion</span>
                     </a>
-                    <a href="https://translate.google.com" class="site-item">
-                        <img src="https://translate.google.com/favicon.ico" class="site-icon">
-                        <span>谷歌翻译</span>
+                </div>
+            </div>
+
+            <!-- 学习资源 -->
+            <div class="site-category">
+                <h2 class="category-title">📚 学习资源</h2>
+                <div class="site-grid">
+                    <a href="https://juejin.cn" class="site-item">
+                        <img src="https://juejin.cn/favicon.ico" class="site-icon">
+                        <span>掘金</span>
                     </a>
-                    <a href="https://www.wolframalpha.com" class="site-item">
-                        <img src="https://www.wolframalpha.com/favicon.ico" class="site-icon">
-                        <span>Wolfram</span>
+                    <a href="https://www.bilibili.com" class="site-item">
+                        <img src="https://www.bilibili.com/favicon.ico" class="site-icon">
+                        <span>哔哩哔哩</span>
+                    </a>
+                    <a href="https://www.coursera.org" class="site-item">
+                        <img src="https://www.coursera.org/favicon.ico" class="site-icon">
+                        <span>Coursera</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 设计资源 -->
+            <div class="site-category">
+                <h2 class="category-title">🎨 设计资源</h2>
+                <div class="site-grid">
+                    <a href="https://dribbble.com" class="site-item">
+                        <img src="https://dribbble.com/favicon.ico" class="site-icon">
+                        <span>Dribbble</span>
+                    </a>
+                    <a href="https://www.behance.net" class="site-item">
+                        <img src="https://www.behance.net/favicon.ico" class="site-icon">
+                        <span>Behance</span>
+                    </a>
+                    <a href="https://www.figma.com" class="site-item">
+                        <img src="https://www.figma.com/favicon.ico" class="site-icon">
+                        <span>Figma</span>
                     </a>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        // 搜索功能
-        const searchInput = document.querySelector('.search-input');
-        const siteItems = document.querySelectorAll('.site-item');
-
-        searchInput.addEventListener('input', (e) => {
-            const searchText = e.target.value.toLowerCase();
-            siteItems.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                if (text.includes(searchText)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-    </script>
 </body>
 </html>
