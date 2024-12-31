@@ -14,24 +14,34 @@
 
     <div id="result"></div>
 
-    <script>
-        document.getElementById('uploadForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // 防止表单默认提交
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 防止表单默认提交
 
-            const formData = new FormData(this);
+        const formData = new FormData(this);
 
-            fetch('https://magiccube-gateway.3vjia.com/mj-biz-c-web/oss/upload/image', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').innerText = '上传成功: ' + JSON.stringify(data);
-            })
-            .catch(error => {
-                document.getElementById('result').innerText = '上传失败: ' + error.message;
-            });
+        fetch('https://magiccube-gateway.3vjia.com/mj-biz-c-web/oss/upload/image', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                // 这里可以添加必要的请求头
+                // 'Authorization': 'Bearer your_token', // 如果需要身份验证
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('网络响应不正常');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('result').innerText = '上传成功: ' + JSON.stringify(data);
+        })
+        .catch(error => {
+            document.getElementById('result').innerText = '上传失败: ' + error.message;
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>
