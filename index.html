@@ -1,1 +1,373 @@
-g
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片上传中心</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f6f8fd 0%, #e9f0f9 100%);
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-area {
+            border: 3px dashed #e0e6ed;
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .upload-area:hover {
+            border-color: #3498db;
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 64px;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            color: #34495e;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .image-item {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .image-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 300px; /* 增加图片高度 */
+            object-fit: contain; /* 修改为contain以显示完整图片 */
+            background: #f8fafc; /* 添加背景色 */
+            border-bottom: 1px solid #eef2f7;
+            padding: 10px; /* 添加内边距 */
+        }
+
+        .image-info {
+            padding: 20px;
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .url-container {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .url-input {
+            width: 100%;
+            height: 60px;
+            padding: 15px;
+            border: 2px solid #eef2f7;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #2c3e50;
+            background: white;
+            resize: none;
+            font-family: monospace;
+            margin-bottom: 10px;
+        }
+
+        .url-input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+        }
+
+        .copy-btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+
+        .preview-btn {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(110%);
+        }
+
+        .success .status-text {
+            color: #27ae60;
+        }
+
+        .error .status-text {
+            color: #e74c3c;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .image-preview {
+                height: 250px;
+            }
+
+            .url-input {
+                height: 50px;
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>图片上传中心</h1>
+        <p>支持拖拽或点击上传，自动生成图片链接</p>
+    </div>
+
+    <div class="container">
+        <div class="upload-area" id="uploadArea">
+            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            <p class="upload-text">点击或拖拽图片到这里上传</p>
+            <p class="upload-hint">支持 JPG、PNG、GIF 格式，单个文件最大 5MB</p>
+            <input type="file" id="fileInput" multiple accept="image/*">
+        </div>
+        <div class="image-grid" id="imageGrid"></div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const imageGrid = document.getElementById('imageGrid');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#3498db';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#e0e6ed';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#e0e6ed';
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    uploadFile(file);
+                }
+            });
+        }
+
+        function uploadFile(file) {
+            const item = createImageItem(URL.createObjectURL(file));
+            imageGrid.insertBefore(item, imageGrid.firstChild);
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('upload.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateImageItem(item, data.data.url);
+                } else {
+                    showError(item, data.message);
+                }
+            })
+            .catch(error => {
+                showError(item, '上传失败');
+            });
+        }
+
+        function createImageItem(previewUrl) {
+            const item = document.createElement('div');
+            item.className = 'image-item';
+            item.innerHTML = `
+                <img src="${previewUrl}" class="image-preview">
+                <div class="image-info">
+                    <p class="status-text">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        正在上传...
+                    </p>
+                    <div class="url-container">
+                        <textarea class="url-input" readonly>上传中...</textarea>
+                        <div class="button-group">
+                            <button class="btn copy-btn" disabled>
+                                <i class="fas fa-copy"></i> 复制链接
+                            </button>
+                            <button class="btn preview-btn" disabled>
+                                <i class="fas fa-external-link-alt"></i> 打开链接
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return item;
+        }
+
+        function updateImageItem(item, imageUrl) {
+            item.classList.add('success');
+            const statusText = item.querySelector('.status-text');
+            const urlInput = item.querySelector('.url-input');
+            const copyBtn = item.querySelector('.copy-btn');
+            const previewBtn = item.querySelector('.preview-btn');
+            
+            statusText.innerHTML = '<i class="fas fa-check-circle"></i> 上传成功';
+            urlInput.value = imageUrl;
+            
+            copyBtn.disabled = false;
+            previewBtn.disabled = false;
+
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(imageUrl).then(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = '<i class="fas fa-copy"></i> 复制链接';
+                    }, 2000);
+                });
+            });
+
+            previewBtn.addEventListener('click', () => {
+                window.open(imageUrl, '_blank');
+            });
+
+            urlInput.addEventListener('click', () => {
+                urlInput.select();
+            });
+        }
+
+        function showError(item, message) {
+            item.classList.add('error');
+            const statusText = item.querySelector('.status-text');
+            const urlInput = item.querySelector('.url-input');
+            const copyBtn = item.querySelector('.copy-btn');
+            const previewBtn = item.querySelector('.preview-btn');
+            
+            statusText.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            urlInput.value = '上传失败，不支持文件格式';
+            
+            copyBtn.disabled = true;
+            previewBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>
