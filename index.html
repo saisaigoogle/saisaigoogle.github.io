@@ -2,48 +2,251 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网址导航</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>赛博朋克导航站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Orbitron', "微软雅黑", sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #000, #1a0f3c);
+        }
+
+        /* 故障效果 */
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 标题样式 */
+        .header {
+            text-align: center;
+            margin: 40px 0;
+            font-size: 3em;
+            color: #ff00ff;
+            text-shadow: 2px 2px #00ffff;
+            animation: glitch 1s infinite;
+        }
+
+        /* 搜索框 */
+        .search-box {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .search-input {
+            width: 60%;
+            padding: 15px 25px;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid #ff00ff;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 18px;
+            box-shadow: 0 0 20px #ff00ff;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 30px #ff00ff;
+        }
+
+        /* 网站卡片容器 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* 网站卡片 */
+        .site-card {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #ff00ff;
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .site-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(255,0,255,0.5);
+        }
+
+        .site-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255,0,255,0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .site-title {
+            color: #00ffff;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ff00ff;
+            padding-bottom: 5px;
+        }
+
+        .site-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .site-item {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            background: rgba(255,0,255,0.1);
+        }
+
+        .site-item:hover {
+            background: rgba(255,0,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .site-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            border-radius: 4px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .search-input {
+                width: 90%;
+            }
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            .site-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>网址导航</h1>
-        <p>快速访问你常用的网站</p>
-    </header>
-    <main>
-        <div class="container">
-            <div class="card">
-                <a href="https://www.baidu.com" target="_blank">百度</a>
+    <div class="container">
+        <h1 class="header">CYBER NAV</h1>
+        
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="输入关键词搜索...">
+        </div>
+
+        <div class="grid-container">
+            <!-- 社交媒体 -->
+            <div class="site-card">
+                <h2 class="site-title">社交媒体</h2>
+                <div class="site-list">
+                    <a href="https://www.bilibili.com" class="site-item">
+                        <img src="https://www.bilibili.com/favicon.ico" class="site-icon">
+                        <span>哔哩哔哩</span>
+                    </a>
+                    <a href="https://www.weibo.com" class="site-item">
+                        <img src="https://weibo.com/favicon.ico" class="site-icon">
+                        <span>微博</span>
+                    </a>
+                    <a href="https://www.zhihu.com" class="site-item">
+                        <img src="https://www.zhihu.com/favicon.ico" class="site-icon">
+                        <span>知乎</span>
+                    </a>
+                </div>
             </div>
-            <div class="card">
-                <a href="https://www.google.com" target="_blank">Google</a>
+
+            <!-- 技术社区 -->
+            <div class="site-card">
+                <h2 class="site-title">技术社区</h2>
+                <div class="site-list">
+                    <a href="https://github.com" class="site-item">
+                        <img src="https://github.com/favicon.ico" class="site-icon">
+                        <span>GitHub</span>
+                    </a>
+                    <a href="https://juejin.cn" class="site-item">
+                        <img src="https://juejin.cn/favicon.ico" class="site-icon">
+                        <span>掘金</span>
+                    </a>
+                    <a href="https://www.v2ex.com" class="site-item">
+                        <img src="https://www.v2ex.com/favicon.ico" class="site-icon">
+                        <span>V2EX</span>
+                    </a>
+                </div>
             </div>
-            <div class="card">
-                <a href="https://www.qq.com" target="_blank">QQ</a>
-            </div>
-            <div class="card">
-                <a href="https://www.weibo.com" target="_blank">微博</a>
-            </div>
-            <div class="card">
-                <a href="https://www.taobao.com" target="_blank">淘宝</a>
-            </div>
-            <div class="card">
-                <a href="https://www.jd.com" target="_blank">京东</a>
-            </div>
-            <div class="card">
-                <a href="https://www.github.com" target="_blank">GitHub</a>
-            </div>
-            <div class="card">
-                <a href="https://www.youtube.com" target="_blank">YouTube</a>
+
+            <!-- 工具箱 -->
+            <div class="site-card">
+                <h2 class="site-title">实用工具</h2>
+                <div class="site-list">
+                    <a href="https://www.notion.so" class="site-item">
+                        <img src="https://www.notion.so/favicon.ico" class="site-icon">
+                        <span>Notion</span>
+                    </a>
+                    <a href="https://translate.google.com" class="site-item">
+                        <img src="https://translate.google.com/favicon.ico" class="site-icon">
+                        <span>谷歌翻译</span>
+                    </a>
+                    <a href="https://www.wolframalpha.com" class="site-item">
+                        <img src="https://www.wolframalpha.com/favicon.ico" class="site-icon">
+                        <span>Wolfram</span>
+                    </a>
+                </div>
             </div>
         </div>
-    </main>
-    <footer>
-        <p>&copy; 2024 网址导航站. 保留所有权利。</p>
-    </footer>
+    </div>
+
+    <script>
+        // 搜索功能
+        const searchInput = document.querySelector('.search-input');
+        const siteItems = document.querySelectorAll('.site-item');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchText = e.target.value.toLowerCase();
+            siteItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchText)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
