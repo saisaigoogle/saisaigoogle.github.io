@@ -3,45 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>图片上传</title>
+    <title>网址导航</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>上传图片</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*" required>
-        <button type="submit">上传</button>
-    </form>
-
-    <div id="result"></div>
-
-<script>
-    document.getElementById('uploadForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // 防止表单默认提交
-
-        const formData = new FormData(this);
-
-        fetch('https://magiccube-gateway.3vjia.com/mj-biz-c-web/oss/upload/image', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                // 这里可以添加必要的请求头
-                // 'Authorization': 'Bearer your_token', // 如果需要身份验证
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('网络响应不正常');
-            }
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById('result').innerText = '上传成功: ' + JSON.stringify(data);
-        })
-        .catch(error => {
-            document.getElementById('result').innerText = '上传失败: ' + error.message;
-        });
-    });
-</script>
-
+    <header>
+        <h1>网址导航站</h1>
+        <p>快速访问你常用的网站</p>
+    </header>
+    <main>
+        <div class="container">
+            <a href="https://www.google.com" class="card" target="_blank">Google</a>
+            <a href="https://www.baidu.com" class="card" target="_blank">百度</a>
+            <a href="https://www.github.com" class="card" target="_blank">GitHub</a>
+            <a href="https://www.stackoverflow.com" class="card" target="_blank">Stack Overflow</a>
+            <a href="https://www.reddit.com" class="card" target="_blank">Reddit</a>
+            <a href="https://www.youtube.com" class="card" target="_blank">YouTube</a>
+            <a href="https://www.facebook.com" class="card" target="_blank">Facebook</a>
+            <a href="https://www.twitter.com" class="card" target="_blank">Twitter</a>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 网址导航站. 保留所有权利。</p>
+    </footer>
 </body>
 </html>
